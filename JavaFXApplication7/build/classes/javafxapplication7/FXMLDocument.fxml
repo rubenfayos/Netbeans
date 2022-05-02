@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/18" fx:controller="javafxapplication7.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxapplication7.FXMLDocumentController">
     <children>
         <Button fx:id="Resultado" layoutX="86.0" layoutY="331.0" onAction="#resultado" text="Resultado" />
         <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
@@ -54,7 +54,7 @@
             <Font size="20.0" />
          </font>
       </Button>
-      <Label fx:id="numbers" alignment="CENTER_RIGHT" layoutX="54.0" layoutY="39.0" prefHeight="25.0" prefWidth="145.0" AnchorPane.topAnchor="39.0">
+      <Label fx:id="numbers" alignment="CENTER_RIGHT" layoutX="54.0" layoutY="39.0" prefHeight="25.0" prefWidth="145.0" text="0" AnchorPane.topAnchor="39.0">
          <font>
             <Font size="20.0" />
          </font>
@@ -89,5 +89,15 @@
             <Font size="20.0" />
          </font>
       </Label>
+      <Button fx:id="punto" layoutX="163.0" layoutY="262.0" mnemonicParsing="false" onAction="#punto" text=".">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Button>
+      <Button fx:id="clear" layoutX="40.0" layoutY="262.0" mnemonicParsing="false" onAction="#clear" text="C">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>
