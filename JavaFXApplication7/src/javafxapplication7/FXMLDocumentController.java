@@ -55,9 +55,13 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Label numbers1;
     
-    int num1=0;
-    int num2=0;
+    float num1=0;
+    float num2=0;
     int opcion=0;
+    @FXML
+    private Button punto;
+    @FXML
+    private Button clear;
     
     
     private void handleButtonAction(ActionEvent event) {
@@ -139,11 +143,18 @@ public class FXMLDocumentController implements Initializable {
         numbers.setText(numbers.getText()+0);
         
     }
+    
+     @FXML
+    private void punto(ActionEvent event) {
+        
+        numbers.setText(numbers.getText()+".");
+        
+    }
 
     @FXML
     private void resultado(ActionEvent event) {
         
-        num2=Integer.parseInt(numbers.getText());
+        num2=Float.valueOf(numbers.getText()).floatValue();
         
         switch(opcion){
             case 1: num1+=num2;
@@ -198,15 +209,26 @@ public class FXMLDocumentController implements Initializable {
     private void almacenar(){
         
       if(this.num1==0){
-          this.num1=Integer.parseInt(numbers.getText());
+          num1=Float.valueOf(numbers.getText()).floatValue();
           numbers.setText("");
           numbers1.setText(String.valueOf(num1));
       }else{
-          num2=Integer.parseInt(numbers.getText());
+          num2=Float.valueOf(numbers.getText()).floatValue();
           numbers.setText("");
           numbers1.setText(String.valueOf(num1));
       } 
     
+    }
+
+    @FXML
+    private void clear(ActionEvent event) {
+        
+        num1=0;
+        num2=0;
+        
+        numbers.setText("0");
+        numbers1.setText("0");
+        
     }
     
 }
