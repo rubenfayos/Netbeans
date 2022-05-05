@@ -148,12 +148,16 @@ public class FXMLDocumentController implements Initializable {
         switch(opcion){
             case 1: num1+=num2;
                 numbers.setText(String.valueOf(num1));
+                break;
             case 2: num1=num1-num2;
                 numbers.setText(String.valueOf(num1));
+                break;
             case 3: num1=num1*num2;
                 numbers.setText(String.valueOf(num1));
+                break;
             case 4: num1=num1/num2;
                 numbers.setText(String.valueOf(num1));
+                break;
         }
         
     }
