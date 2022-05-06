@@ -56,31 +56,26 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private TextField id_delete;
     
-    
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
-    }
+    private Connection conn;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        
+        //La conexión se realiza mediante otra clase
+        
+        controlador c = new controlador();
+        this.conn=c.conexion();
+        c.crearbdd();
     }    
 
     @FXML
     private void save_button(ActionEvent event) {
         
         try{
-    
-			
-			DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-			Connection conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/personas", "root", ""
-					);
 	
-			PreparedStatement ps = conn.prepareStatement(
-				"INSERT INTO persona(nombre, apellidos, dni, telefono) VALUES(?, ?, ?, ?)"
-				);
+                PreparedStatement ps = this.conn.prepareStatement(
+		"INSERT INTO persona(nombre, apellidos, dni, telefono) VALUES(?, ?, ?, ?)"
+		);
                         
 		ps.setString(1, nombre_save.getText());
 		ps.setString(2, apellidos_save.getText());
@@ -88,19 +83,12 @@ public class FXMLDocumentController implements Initializable {
                 ps.setString(4, telefono_save.getText());
 		
 		ps.execute();
-	
-			
-				conn.close();
-					
-				
-		}catch (SQLException e){
+								
+            }catch (SQLException e){
 			e.printStackTrace();
-		}
+            }
         
-        nombre_save.clear();
-        apellidos_save.clear();
-        dni_save.clear();
-        telefono_save.clear();
+      clear();
         
     }
 
@@ -109,38 +97,23 @@ public class FXMLDocumentController implements Initializable {
         
         try{
         
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-                            Connection conn = DriverManager.getConnection(
-                                            "jdbc:mysql://localhost:3306/personas", "root", ""
-                                            );
+                PreparedStatement ps = this.conn.prepareStatement(
+                "UPDATE persona SET nombre=?, apellidos=?, dni=?, telefono=? WHERE id=?"
+                );
 
-                            PreparedStatement ps = conn.prepareStatement(
-                                    "UPDATE persona SET nombre=?, apellidos=?, dni=?, telefono=? WHERE id=?"
-                                    );
+                ps.setString(1, nombre_modify.getText());
+                ps.setString(2, apellidos_modify.getText());
+                ps.setString(3, dni_modify.getText());
+                ps.setString(4, telefono_modify.getText());
+                ps.setString(5, id_modify.getText());
 
-                    ps.setString(1, nombre_modify.getText());
-                    ps.setString(2, apellidos_modify.getText());
-                    ps.setString(3, dni_modify.getText());
-                    ps.setString(4, telefono_modify.getText());
-                    ps.setString(5, id_modify.getText());
-
-                    ps.execute();
-
-
-                                 conn.close();
-					
+                ps.execute();			
 				
-		}catch (SQLException e){
+            }catch (SQLException e){
 			e.printStackTrace();
-		}
-        
-        nombre_modify.clear();
-        apellidos_modify.clear();
-        dni_modify.clear();
-        telefono_modify.clear();
-        id_modify.clear();
-        
-        
+            }
+  
+         clear();
     }
 
     @FXML
@@ -150,87 +123,88 @@ public class FXMLDocumentController implements Initializable {
         a.setHeaderText("¿Quieres borrar el usuario?");
         Optional<ButtonType> option = a.showAndWait();
         
-        
         try{
-        
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-                            Connection conn = DriverManager.getConnection(
-                                            "jdbc:mysql://localhost:3306/personas", "root", ""
-                                            );
+                PreparedStatement ps = this.conn.prepareStatement(
+                "DELETE FROM persona WHERE id=?"
+                );
 
-                            PreparedStatement ps = conn.prepareStatement(
-                                    "DELETE FROM persona WHERE id=?"
-                                    );
-
-                    ps.setString(1, id_delete.getText());
+                ps.setString(1, id_delete.getText());
+                
+                //Confirmación de borrado
                     
-                    if (option.get() == ButtonType.OK) {
-                        ps.execute();
-                    } else if (option.get() == ButtonType.CANCEL) {
-           
-                    }
+                if (option.get() == ButtonType.OK) {
+                    ps.execute();
+                } else if (option.get() == ButtonType.CANCEL) {
 
-                                 conn.close();
-					
-				
+                }
+							
 		}catch (SQLException e){
 			e.printStackTrace();
 		}
         
-        id_delete.clear();
+        clear();
         
     }
 
     @FXML
     private void list(ActionEvent event) {
         
+        //La salida se realiza medieante un String que acumula todos los campos
+        
         String salida = "";
         
         try{
-           
-        
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-                            Connection conn = DriverManager.getConnection(
-                                            "jdbc:mysql://localhost:3306/personas", "root", ""
-                                            );
 
-                        Statement stmt = conn.createStatement();
-                            PreparedStatement ps = conn.prepareStatement(
-                                            "SELECT * FROM persona");
+                Statement stmt = this.conn.createStatement();
+                PreparedStatement ps = conn.prepareStatement(
+                "SELECT * FROM persona");
 
-                            ResultSet rs = ps.executeQuery();
+                ResultSet rs = ps.executeQuery();
 
-                            while(rs.next()) {
-                                    salida+="id: ";
-                                    salida+= rs.getString("id");
-                                    salida+=", nombre: ";
-                                    salida+= rs.getString("nombre");
-                                    salida+=", apellidos: ";
-                                    salida+= rs.getString("apellidos");
-                                    salida+=", dni: ";
-                                    salida+= rs.getString("dni");
-                                    salida+=", telefono: ";
-                                    salida+= rs.getString("telefono");
-                                    salida+="\n";
-
-                            }
-
-
-                                 conn.close();
-					
-				
+                while(rs.next()) {
+                    salida+="id: ";
+                    salida+= rs.getString("id");
+                    salida+=", nombre: ";
+                    salida+= rs.getString("nombre");
+                    salida+=", apellidos: ";
+                    salida+= rs.getString("apellidos");
+                    salida+=", dni: ";
+                    salida+= rs.getString("dni");
+                    salida+=", telefono: ";
+                    salida+= rs.getString("telefono");
+                    salida+="\n";
+                }
+							
 		}catch (SQLException e){
 			e.printStackTrace();
 		}
         
-        
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setContentText(salida);
+        Alert a = new Alert(Alert.AlertType.INFORMATION, salida);
         a.setHeaderText("Personas");
+        a.setResizable(true);
+        a.getDialogPane().setPrefSize(480, 200);
         
         a.show();
         
-        
+        clear();
     }
     
+    private void clear(){
+        
+        //Método de borrado de campos
+        
+        nombre_save.clear();
+        apellidos_save.clear();
+        dni_save.clear();
+        telefono_save.clear();
+        
+        nombre_modify.clear();
+        apellidos_modify.clear();
+        dni_modify.clear();
+        telefono_modify.clear();
+        id_modify.clear();
+        
+        id_delete.clear();
+        
+    } 
 }
