@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,7 +18,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  *
@@ -58,37 +62,33 @@ public class FXMLDocumentController implements Initializable {
     
     private Connection conn;
     
+    private controlador c;
+    @FXML
+    private TableView<Persona> table;
+    @FXML
+    private TableColumn<Persona><String> table_id;
+    
+    private ObservableList<Persona> personas;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
         //La conexión se realiza mediante otra clase
         
-        controlador c = new controlador();
+        c = new controlador();
         this.conn=c.conexion();
         c.crearbdd();
+        
     }    
 
     @FXML
     private void save_button(ActionEvent event) {
         
-        try{
-	
-                PreparedStatement ps = this.conn.prepareStatement(
-		"INSERT INTO persona(nombre, apellidos, dni, telefono) VALUES(?, ?, ?, ?)"
-		);
-                        
-		ps.setString(1, nombre_save.getText());
-		ps.setString(2, apellidos_save.getText());
-		ps.setString(3, dni_save.getText());
-                ps.setString(4, telefono_save.getText());
-		
-		ps.execute();
-								
-            }catch (SQLException e){
-			e.printStackTrace();
-            }
+        Persona p = new Persona(nombre_save.getText(), apellidos_save.getText(), dni_save.getText(), telefono_save.getText());
         
-      clear();
+        c.insert(p);
+        
+        clear();
         
     }
 
@@ -138,9 +138,9 @@ public class FXMLDocumentController implements Initializable {
 
                 }
 							
-		}catch (SQLException e){
+            }catch (SQLException e){
 			e.printStackTrace();
-		}
+            }
         
         clear();
         
@@ -162,17 +162,7 @@ public class FXMLDocumentController implements Initializable {
                 ResultSet rs = ps.executeQuery();
 
                 while(rs.next()) {
-                    salida+="id: ";
-                    salida+= rs.getString("id");
-                    salida+=", nombre: ";
-                    salida+= rs.getString("nombre");
-                    salida+=", apellidos: ";
-                    salida+= rs.getString("apellidos");
-                    salida+=", dni: ";
-                    salida+= rs.getString("dni");
-                    salida+=", telefono: ";
-                    salida+= rs.getString("telefono");
-                    salida+="\n";
+                    personas.add(new Persona(rs.getString("nombre"), rs.getString("apellidos"), rs.getString("dni"), rs.getString("telefono")));
                 }
 							
 		}catch (SQLException e){
@@ -185,6 +175,8 @@ public class FXMLDocumentController implements Initializable {
         a.getDialogPane().setPrefSize(480, 200);
         
         a.show();
+        
+        this.table_id.setCellValueFactory(new PropertyValueFactory("nombre"));
         
         clear();
     }
