@@ -33,29 +33,5 @@ public class controlador {
     
     public controlador(){
         
-    }
-    
-    public void crearbdd(){
-        
-        try{
-        
-        PreparedStatement ps = this.conn.prepareStatement(
-                
-            "DROP DATABASE IF EXISTS personas;\n" +
-            "CREATE DATABASE personas;\n" +
-            "USE personas;\n" +
-            "\n" +
-            "CREATE TABLE persona(id INT AUTO_INCREMENT PRIMARY KEY, nombre VARCHAR(15), apellidos VARCHAR(30), DNI VARCHAR(9), telefono VARCHAR(9));\n" +
-            "INSERT INTO persona(nombre, apellidos, dni, telefono) VALUES(\"Rubén\", \"Fayos Medie\", \"2131232A\", \"213123121\");"
-            );
-        
-        ps.execute();
-        
-        }catch (SQLException e){
-            e.printStackTrace();
-        }   
-    }
-    
-   
-    
+    } 
 }

@@ -61,19 +61,18 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private TextField id_delete;
     
-    //Adicional
-    
-    private Connection conn;
-    
+    //Conexión con la bdd
     private controlador c;
     
+    //Clase para el manejo de datos   
     private datos d;
-    @FXML
-    private TableColumn<Persona,Integer> table_id;
     
+    //Table column
     private ObservableList<Persona> personas;
     @FXML
     private TableView<Persona> tablaPersonas;
+    @FXML
+    private TableColumn<Persona,Integer> table_id;
     @FXML
     private TableColumn<Persona, String> table_nombre;
     @FXML
@@ -86,19 +85,15 @@ public class FXMLDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        personas = FXCollections.observableArrayList();
         this.table_id.setCellValueFactory(new PropertyValueFactory("id"));
         this.table_nombre.setCellValueFactory(new PropertyValueFactory("nombre"));
         this.table_apellidos.setCellValueFactory(new PropertyValueFactory("apellidos"));
         this.table_dni.setCellValueFactory(new PropertyValueFactory("dni"));
         this.table_telefono.setCellValueFactory(new PropertyValueFactory("telefono"));
         
-        
         c = new controlador();
         this.d = new datos(c.conexion());
-        
-        
-        
+   
     }    
 
     @FXML

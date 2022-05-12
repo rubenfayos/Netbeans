@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -110,13 +111,13 @@ public class datos {
     
     public ObservableList<Persona> lista(){
         
+        personas = FXCollections.observableArrayList();
+        
         try{
 
-                Statement stmt = this.conn.createStatement();
-                PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM persona");
-
-                ResultSet rs = ps.executeQuery();
+                Statement stmt = this.conn.createStatement(); 
+                ResultSet rs = stmt.executeQuery(
+                    "SELECT * FROM persona");
 
                 while(rs.next()) {
                     Persona p = new Persona(rs.getString("nombre"), rs.getString("apellidos"), rs.getString("DNI"), rs.getString("telefono"));
