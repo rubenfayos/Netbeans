@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -60,24 +61,43 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private TextField id_delete;
     
+    //Adicional
+    
     private Connection conn;
     
     private controlador c;
+    
+    private datos d;
     @FXML
-    private TableView<Persona> table;
-    @FXML
-    private TableColumn<Persona><String> table_id;
+    private TableColumn<Persona,Integer> table_id;
     
     private ObservableList<Persona> personas;
+    @FXML
+    private TableView<Persona> tablaPersonas;
+    @FXML
+    private TableColumn<Persona, String> table_nombre;
+    @FXML
+    private TableColumn<Persona, String> table_apellidos;
+    @FXML
+    private TableColumn<Persona, String> table_dni;
+    @FXML
+    private TableColumn<Persona, String> table_telefono;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        //La conexión se realiza mediante otra clase
+        personas = FXCollections.observableArrayList();
+        this.table_id.setCellValueFactory(new PropertyValueFactory("id"));
+        this.table_nombre.setCellValueFactory(new PropertyValueFactory("nombre"));
+        this.table_apellidos.setCellValueFactory(new PropertyValueFactory("apellidos"));
+        this.table_dni.setCellValueFactory(new PropertyValueFactory("dni"));
+        this.table_telefono.setCellValueFactory(new PropertyValueFactory("telefono"));
+        
         
         c = new controlador();
-        this.conn=c.conexion();
-        c.crearbdd();
+        this.d = new datos(c.conexion());
+        
+        
         
     }    
 
@@ -86,7 +106,7 @@ public class FXMLDocumentController implements Initializable {
         
         Persona p = new Persona(nombre_save.getText(), apellidos_save.getText(), dni_save.getText(), telefono_save.getText());
         
-        c.insert(p);
+        d.insert(p);
         
         clear();
         
@@ -95,25 +115,10 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void modify_button(ActionEvent event) {
         
-        try{
-        
-                PreparedStatement ps = this.conn.prepareStatement(
-                "UPDATE persona SET nombre=?, apellidos=?, dni=?, telefono=? WHERE id=?"
-                );
-
-                ps.setString(1, nombre_modify.getText());
-                ps.setString(2, apellidos_modify.getText());
-                ps.setString(3, dni_modify.getText());
-                ps.setString(4, telefono_modify.getText());
-                ps.setString(5, id_modify.getText());
-
-                ps.execute();			
-				
-            }catch (SQLException e){
-			e.printStackTrace();
-            }
-  
-         clear();
+        Persona p = new Persona(nombre_modify.getText(), apellidos_modify.getText(), dni_modify.getText(), telefono_modify.getText());
+        p.setId(Integer.parseInt(id_modify.getText()));
+        d.update(p);
+        clear();
     }
 
     @FXML
@@ -123,60 +128,18 @@ public class FXMLDocumentController implements Initializable {
         a.setHeaderText("¿Quieres borrar el usuario?");
         Optional<ButtonType> option = a.showAndWait();
         
-        try{
-                PreparedStatement ps = this.conn.prepareStatement(
-                "DELETE FROM persona WHERE id=?"
-                );
-
-                ps.setString(1, id_delete.getText());
-                
-                //Confirmación de borrado
-                    
-                if (option.get() == ButtonType.OK) {
-                    ps.execute();
-                } else if (option.get() == ButtonType.CANCEL) {
-
-                }
-							
-            }catch (SQLException e){
-			e.printStackTrace();
-            }
+        d.delete(Integer.parseInt(id_delete.getText()), a, option);
         
         clear();
         
     }
-
+    
     @FXML
-    private void list(ActionEvent event) {
+    private void list_button(ActionEvent event) {
         
-        //La salida se realiza medieante un String que acumula todos los campos
+        personas=d.lista();
         
-        String salida = "";
-        
-        try{
-
-                Statement stmt = this.conn.createStatement();
-                PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM persona");
-
-                ResultSet rs = ps.executeQuery();
-
-                while(rs.next()) {
-                    personas.add(new Persona(rs.getString("nombre"), rs.getString("apellidos"), rs.getString("dni"), rs.getString("telefono")));
-                }
-							
-		}catch (SQLException e){
-			e.printStackTrace();
-		}
-        
-        Alert a = new Alert(Alert.AlertType.INFORMATION, salida);
-        a.setHeaderText("Personas");
-        a.setResizable(true);
-        a.getDialogPane().setPrefSize(480, 200);
-        
-        a.show();
-        
-        this.table_id.setCellValueFactory(new PropertyValueFactory("nombre"));
+        this.tablaPersonas.setItems(personas);
         
         clear();
     }
@@ -199,4 +162,5 @@ public class FXMLDocumentController implements Initializable {
         id_delete.clear();
         
     } 
+
 }

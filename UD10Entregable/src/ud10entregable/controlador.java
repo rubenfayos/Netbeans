@@ -56,24 +56,6 @@ public class controlador {
         }   
     }
     
-    public void insert(Persona p){
-        
-         try{
-	
-                PreparedStatement ps = this.conn.prepareStatement(
-		"INSERT INTO persona(nombre, apellidos, dni, telefono) VALUES(?, ?, ?, ?)"
-		);
-                
-                ps.setString(1, p.getNombre());
-                ps.setString(2, p.getApellidos());
-                ps.setString(3, p.getDni());
-                ps.setString(4, p.getTelefono());
-		
-		ps.execute();
-								
-            }catch (SQLException e){
-			e.printStackTrace();
-            }
-    }
+   
     
 }
